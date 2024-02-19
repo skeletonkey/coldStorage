@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh $USER@$REMOTE_SERVER docker stop -t 0 my_$IMAGE_NAME
