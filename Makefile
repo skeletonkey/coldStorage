@@ -10,8 +10,9 @@ install:
 	cp bin/cold-storage /usr/local/sbin/cold-storage
 
 golib-latest:
-	go get -u github.com/mattn/go-sqlite3@latest
 	go get -u github.com/labstack/echo/v4@latest
+	go get -u github.com/mattn/go-sqlite3@latest
+	go get -u github.com/rabbitmq/amqp091-go@latest
 	go get -u github.com/skeletonkey/lib-core-go@latest
 	go get -u github.com/skeletonkey/lib-instance-gen-go@latest
 

@@ -1,11 +1,11 @@
 // lib-instance-gen-go: File auto generated -- DO NOT EDIT!!!
-package archimedes
+package queue
 
 import "github.com/skeletonkey/lib-core-go/config"
 
-var cfg *archimedes
+var cfg *queue
 
-func getConfig() *archimedes {
-	config.LoadConfig("archimedes", &cfg)
+func getConfig() *queue {
+	config.LoadConfig("queue", &cfg)
 	return cfg
 }
