@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/skeletonkey/coldStorage/app/dataStore"
 	"github.com/skeletonkey/coldStorage/app/httpServer"
