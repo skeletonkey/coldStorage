@@ -13,10 +13,14 @@ import (
 	"github.com/skeletonkey/lib-core-go/logger"
 )
 
+var mediaFiles library
+
 func RunServer() {
 	config := getConfig()
 	log := logger.Get()
 	log.Info().Msg("Starting Echo server")
+
+	mediaFiles = newLibrary(config)
 
 	e := echo.New()
 
@@ -28,11 +32,6 @@ func RunServer() {
 		log.Error().Err(err).Int("Port", config.Port).Msg("error while attempting to start echo server")
 	}
 	log.Trace().Msg("Echo server should be running")
-}
-
-var mediaFiles library = library{
-	entities:     make([]entity, 0),
-	updateNeeded: true,
 }
 
 func app(c echo.Context) error {
@@ -50,8 +49,12 @@ func app(c echo.Context) error {
 
 	var b strings.Builder
 	b.WriteString("<HTML><BODY><table><tr><td>Type</td><td>Title</td></tr>")
-	for _, media := range mediaFiles.entities {
-		b.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", media.media, media.title))
+	for mediaTitle, mediaNode := range mediaFiles.entities {
+		if mediaNode.parent == "" {
+			// top of the pyramid is a category
+			continue
+		}
+		b.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", mediaNode.media, mediaTitle))
 	}
 	b.WriteString("</table></BODY></HTML>")
 
@@ -59,30 +62,52 @@ func app(c echo.Context) error {
 }
 
 type library struct {
-	entities     []entity
+	entities     map[string]entity
 	updateNeeded bool
 }
 type entity struct {
 	media string
 	title string
+	parent string
+}
+
+func newLibrary(cfg *httpServer) library {
+	l := library{
+		entities: make(map[string]entity, 2),
+		updateNeeded: true,
+	}
+
+	for _, mediaType := range cfg.MediaTypes {
+		l.entities[mediaType] = entity{
+			media: mediaType,
+			title: mediaType,
+			parent: "",
+		}
+	}
+
+	return l
 }
 
 func (v *library) visit(basePath string, entry fs.DirEntry, err error) error {
-	if entry.Name() == "Movies" || entry.Name() == "TV Shows" {
-		return nil
-	}
 	if err != nil {
 		return err
 	}
-
-	parts := strings.Split(basePath, string(os.PathSeparator))
-
-	temp := entity{
-		media: parts[len(parts)-2],
-		title: entry.Name(),
+	if _, ok := v.entities[entry.Name()]; ok {
+		// do not reprocess existing entries
+		return nil
 	}
 
-	v.entities = append(v.entities, temp)
+	parts := strings.Split(basePath, string(os.PathSeparator))
+	parent, ok := v.entities[parts[len(parts)-2]]
+	if !ok {
+		return fmt.Errorf("could not find '%s' in entities", parts[len(parts)-2])
+	}
+
+	v.entities[entry.Name()] = entity{
+		media: parent.media,
+		title: entry.Name(),
+		parent: parent.title,
+	}
 
 	return nil
 }
