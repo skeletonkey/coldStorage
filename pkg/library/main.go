@@ -39,7 +39,7 @@ type Movie struct {
 	Name string
 }
 
-func (v Library) addMovie(title string) error {
+func (v *Library) addMovie(title string) error {
 	fmt.Printf("addMovie: %s\n", title)
 	v.Movies = append(v.Movies, &Movie{
 		Name: title,
@@ -48,7 +48,7 @@ func (v Library) addMovie(title string) error {
 	return nil
 }
 
-func (v Library) addEpisode(title string) error {
+func (v *Library) addEpisode(title string) error {
 	fmt.Printf("addEpisode: %s\n", title)
 	parts := strings.Split(title, " - ")
 	seriesName := parts[0]
@@ -107,7 +107,7 @@ func Initialize(ctx context.Context, baseDir string, moviesDir string, tvShowsDi
 	return nil
 }
 
-func (v Library) refresh() error {
+func (v *Library) refresh() error {
 	fmt.Println("refresh")
 	// movies
 	dir, ok := v.dirs[moviesKey]
@@ -149,7 +149,7 @@ func (v Library) refresh() error {
 
 //		return nil
 //	}
-func (v Library) processMovies(dir string) error {
+func (v *Library) processMovies(dir string) error {
 	fmt.Printf("movie: %s\n", dir)
 	files, err := os.ReadDir(dir)
 	if err != nil {
@@ -170,7 +170,7 @@ func (v Library) processMovies(dir string) error {
 	return nil
 }
 
-func (v Library) processTVShows(dir string) error {
+func (v *Library) processTVShows(dir string) error {
 	fmt.Printf("tv: %s\n", dir)
 	files, err := os.ReadDir(dir)
 	if err != nil {
