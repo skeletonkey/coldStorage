@@ -51,8 +51,10 @@ func (v *Library) addMovie(title string) error {
 func (v *Library) addEpisode(title string) error {
 	// fmt.Printf("addEpisode: %s\n", title)
 	parts := strings.Split(title, " - ")
-	if len(parts) < 3 {
-		return fmt.Errorf("episode title (%s) doesn't properly split into 3 parts", title)
+	seriesName := parts[0]
+	episodeName := parts[0]
+	if len(parts) == 3 {
+		episodeName = parts[2]
 	}
 
 	// series -> parts[0]
@@ -60,14 +62,14 @@ func (v *Library) addEpisode(title string) error {
 	var tvSeries Series
 	if tvSeries, found = v.TVShows[parts[0]]; !found {
 		tvSeries = Series{
-			Title:    parts[0],
+			Title:    seriesName,
 			Episodes: make([]Show, 0),
 		}
 	}
 	tvSeries.Episodes = append(tvSeries.Episodes, Show{
 		Season:  0,
 		Episode: 0,
-		Title:   parts[2],
+		Title:   episodeName,
 	})
 
 	return nil
