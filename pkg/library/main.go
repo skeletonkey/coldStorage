@@ -49,6 +49,9 @@ func (v Library) addMovie(title string) error {
 
 func (v Library) addEpisode(title string) error {
 	parts := strings.Split(title, " - ")
+	if len(parts) < 3 {
+		return fmt.Errorf("episode title (%s) doesn't properly split into 3 parts", title)
+	}
 
 	// series -> parts[0]
 	var found bool
