@@ -39,7 +39,8 @@ type Movie struct {
 	Name string
 }
 
-func (v Library) addMovie(title string) error {
+func (v *Library) addMovie(title string) error {
+	// fmt.Printf("addMovie: %s\n", title)
 	v.Movies = append(v.Movies, Movie{
 		Name: title,
 	})
@@ -47,7 +48,8 @@ func (v Library) addMovie(title string) error {
 	return nil
 }
 
-func (v Library) addEpisode(title string) error {
+func (v *Library) addEpisode(title string) error {
+	// fmt.Printf("addEpisode: %s\n", title)
 	parts := strings.Split(title, " - ")
 	if len(parts) < 3 {
 		return fmt.Errorf("episode title (%s) doesn't properly split into 3 parts", title)
@@ -100,7 +102,8 @@ func Initialize(ctx context.Context, baseDir string, moviesDir string, tvShowsDi
 	return nil
 }
 
-func (v Library) refresh() error {
+func (v *Library) refresh() error {
+	// fmt.Println("refresh")
 	// movies
 	dir, ok := v.dirs[moviesKey]
 	if !ok {
@@ -141,32 +144,42 @@ func (v Library) refresh() error {
 
 //		return nil
 //	}
-func (v Library) processMovies(dir string) error {
+func (v *Library) processMovies(dir string) error {
+	// fmt.Printf("movie: %s\n", dir)
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		return fmt.Errorf("unable to read dir (%s): %s", dir, err)
 	}
 	for _, file := range files {
 		if file.IsDir() {
-			return v.processMovies(fmt.Sprintf("%s/%s", dir, file.Name()))
+			if err = v.processMovies(fmt.Sprintf("%s/%s", dir, file.Name())); err != nil {
+				return err
+			}
 		} else {
-			return v.addMovie(file.Name())
+			if err = v.addMovie(file.Name()); err != nil {
+				return err
+			}
 		}
 	}
 
 	return nil
 }
 
-func (v Library) processTVShows(dir string) error {
+func (v *Library) processTVShows(dir string) error {
+	// fmt.Printf("tv: %s\n", dir)
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		return fmt.Errorf("unable to read dir (%s): %s", dir, err)
 	}
 	for _, file := range files {
 		if file.IsDir() {
-			return v.processTVShows(fmt.Sprintf("%s/%s", dir, file.Name()))
+			if err = v.processTVShows(fmt.Sprintf("%s/%s", dir, file.Name())); err != nil {
+				return err
+			}
 		} else {
-			return v.addEpisode(file.Name())
+			if err = v.addEpisode(file.Name()); err != nil {
+				return err
+			}
 		}
 	}
 
