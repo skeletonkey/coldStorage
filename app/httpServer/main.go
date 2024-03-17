@@ -49,7 +49,7 @@ func app(c echo.Context) error {
 			b.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", library.MoviesTopicTitle, movie.Name))
 		}
 		for seriesKey, series := range lib.TVShows {
-			fmt.Printf("Key: %s\n", seriesKey)
+			fmt.Printf("Key: %s -> %+v\n", seriesKey, series)
 			for _, episode := range series.Episodes {
 				fmt.Printf("Ep title: %s\n", episode.Title)
 				b.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", library.TVShowsTopicTitle, episode.Title))
