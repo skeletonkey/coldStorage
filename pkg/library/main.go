@@ -19,14 +19,14 @@ const (
 
 type Library struct {
 	dirs            map[string]string
-	Movies          []Movie
-	TVShows         map[string]Series
+	Movies          []*Movie
+	TVShows         map[string]*Series
 	refreshRequired bool
 }
 
 type Series struct {
 	Title    string
-	Episodes []Show
+	Episodes []*Show
 }
 
 type Show struct {
@@ -39,16 +39,16 @@ type Movie struct {
 	Name string
 }
 
-func (v *Library) addMovie(title string) error {
+func (v Library) addMovie(title string) error {
 	fmt.Printf("addMovie: %s\n", title)
-	v.Movies = append(v.Movies, Movie{
+	v.Movies = append(v.Movies, &Movie{
 		Name: title,
 	})
 
 	return nil
 }
 
-func (v *Library) addEpisode(title string) error {
+func (v Library) addEpisode(title string) error {
 	fmt.Printf("addEpisode: %s\n", title)
 	parts := strings.Split(title, " - ")
 	seriesName := parts[0]
@@ -59,17 +59,17 @@ func (v *Library) addEpisode(title string) error {
 
 	// series -> parts[0]
 	var found bool
-	var tvSeries Series
+	var tvSeries *Series
 	if tvSeries, found = v.TVShows[seriesName]; !found {
 		fmt.Printf("creating series: %s\n", seriesName)
-		tvSeries = Series{
+		tvSeries = &Series{
 			Title:    seriesName,
-			Episodes: make([]Show, 0),
+			Episodes: make([]*Show, 0),
 		}
 		v.TVShows[seriesName] = tvSeries
 	}
 	fmt.Printf("adding episode: %s\n", episodeName)
-	tvSeries.Episodes = append(tvSeries.Episodes, Show{
+	tvSeries.Episodes = append(tvSeries.Episodes, &Show{
 		Season:  0,
 		Episode: 0,
 		Title:   episodeName,
@@ -84,8 +84,8 @@ func Initialize(ctx context.Context, baseDir string, moviesDir string, tvShowsDi
 			moviesKey:  fmt.Sprintf("%s/%s", baseDir, moviesDir),
 			tvShowsKey: fmt.Sprintf("%s/%s", baseDir, tvShowsDir),
 		},
-		Movies:          make([]Movie, 0),
-		TVShows:         make(map[string]Series),
+		Movies:          make([]*Movie, 0),
+		TVShows:         make(map[string]*Series),
 		refreshRequired: true,
 	}
 
@@ -107,7 +107,7 @@ func Initialize(ctx context.Context, baseDir string, moviesDir string, tvShowsDi
 	return nil
 }
 
-func (v *Library) refresh() error {
+func (v Library) refresh() error {
 	fmt.Println("refresh")
 	// movies
 	dir, ok := v.dirs[moviesKey]
@@ -149,7 +149,7 @@ func (v *Library) refresh() error {
 
 //		return nil
 //	}
-func (v *Library) processMovies(dir string) error {
+func (v Library) processMovies(dir string) error {
 	fmt.Printf("movie: %s\n", dir)
 	files, err := os.ReadDir(dir)
 	if err != nil {
@@ -170,7 +170,7 @@ func (v *Library) processMovies(dir string) error {
 	return nil
 }
 
-func (v *Library) processTVShows(dir string) error {
+func (v Library) processTVShows(dir string) error {
 	fmt.Printf("tv: %s\n", dir)
 	files, err := os.ReadDir(dir)
 	if err != nil {
