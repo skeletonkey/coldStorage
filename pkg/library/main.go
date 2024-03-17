@@ -103,14 +103,18 @@ func (v Library) refresh() error {
 	if !ok {
 		return fmt.Errorf("no %s directory found", moviesKey)
 	}
-	v.processMovies(dir)
+	if err := v.processMovies(dir); err != nil {
+		return err
+	}
 
 	// tv shows
 	dir, ok = v.dirs[tvShowsKey]
 	if !ok {
 		return fmt.Errorf("no %s directory found", tvShowsKey)
 	}
-	v.processTVShows(dir)
+	if err := v.processTVShows(dir); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -141,11 +145,7 @@ func (v Library) processMovies(dir string) error {
 	}
 	for _, file := range files {
 		if file.IsDir() {
-			if info, err := file.Info(); err != nil {
-				return err
-			} else {
-				return v.processMovies(info.Name())
-			}
+			return v.processMovies(fmt.Sprintf("%s/%s", dir, file.Name()))
 		} else {
 			return v.addMovie(file.Name())
 		}
@@ -161,11 +161,7 @@ func (v Library) processTVShows(dir string) error {
 	}
 	for _, file := range files {
 		if file.IsDir() {
-			if info, err := file.Info(); err != nil {
-				return err
-			} else {
-				return v.processTVShows(info.Name())
-			}
+			return v.processTVShows(fmt.Sprintf("%s/%s", dir, file.Name()))
 		} else {
 			return v.addEpisode(file.Name())
 		}
