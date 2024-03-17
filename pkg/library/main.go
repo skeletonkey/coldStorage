@@ -75,7 +75,7 @@ func Initialize(ctx context.Context, baseDir string, moviesDir string, tvShowsDi
 	libraryInstance = Library{
 		dirs: map[string]string{
 			moviesKey:  fmt.Sprintf("%s/%s", baseDir, moviesDir),
-			tvShowsKey: fmt.Sprintf("%s/%s", baseDir, moviesDir),
+			tvShowsKey: fmt.Sprintf("%s/%s", baseDir, tvShowsDir),
 		},
 		Movies:          make([]Movie, 0),
 		TVShows:         make(map[string]Series),
