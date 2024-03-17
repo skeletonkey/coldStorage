@@ -67,13 +67,14 @@ func (v *Library) addEpisode(title string) error {
 			Episodes: make([]*Show, 0),
 		}
 		v.TVShows[seriesName] = tvSeries
+	} else {
+		fmt.Printf("adding episode: %s\n", episodeName)
+		tvSeries.Episodes = append(tvSeries.Episodes, &Show{
+			Season:  0,
+			Episode: 0,
+			Title:   episodeName,
+		})
 	}
-	fmt.Printf("adding episode: %s\n", episodeName)
-	tvSeries.Episodes = append(tvSeries.Episodes, &Show{
-		Season:  0,
-		Episode: 0,
-		Title:   episodeName,
-	})
 
 	return nil
 }
