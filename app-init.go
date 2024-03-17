@@ -9,10 +9,9 @@ func main() {
 	// primary coordinator
 	app := instanceGen.NewApp("cold-storage", "app")
 	app.
-		WithPackages("httpServer", "dataStore", "queue").
+		WithPackages("httpServer").
 		WithDependencies(
 			"github.com/labstack/echo/v4",
-			"github.com/mattn/go-sqlite3",
 			"github.com/rabbitmq/amqp091-go",
 		).
 		WithGithubWorkflows("linter", "test").
