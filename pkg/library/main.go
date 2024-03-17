@@ -60,12 +60,15 @@ func (v *Library) addEpisode(title string) error {
 	// series -> parts[0]
 	var found bool
 	var tvSeries Series
-	if tvSeries, found = v.TVShows[parts[0]]; !found {
+	if tvSeries, found = v.TVShows[seriesName]; !found {
+		fmt.Printf("creating series: %s\n", seriesName)
 		tvSeries = Series{
 			Title:    seriesName,
 			Episodes: make([]Show, 0),
 		}
+		v.TVShows[seriesName] = tvSeries
 	}
+	fmt.Printf("adding episode: %s\n", episodeName)
 	tvSeries.Episodes = append(tvSeries.Episodes, Show{
 		Season:  0,
 		Episode: 0,
