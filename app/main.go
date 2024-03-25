@@ -15,5 +15,5 @@ func main() {
 
 	httpServer.RunServer()
 
-	fmt.Println("Bye Bye!")
+	fmt.Println("Shutting down!")
 }
