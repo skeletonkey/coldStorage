@@ -1,9 +1,7 @@
 name: CHANGELOG.md has been updated
 
 on:
-  pull_request:
-    branches:
-      - "*"
+  push:
 
 jobs:
   check-file-change:
