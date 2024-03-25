@@ -2,7 +2,8 @@ name: Check if CHANGELOG.md has been updated
 
 on:
   pull_request:
-    types: [edited, opened, reopened]
+	branches: 
+	 - "*"
 
 jobs:
   check-file-change:
