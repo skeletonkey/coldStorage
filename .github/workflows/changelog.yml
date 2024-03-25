@@ -20,12 +20,3 @@ jobs:
             echo "Pull request does not contain changes to '$changeLogFileName'. Please update '$changeLogFileName' and try again."
             exit 1
           fi
-
-      - name: Leave comment if no change
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.number }}
-          body: "Pull request does not contain changes to 'CHANGELOG.md'. Please update 'CHANGELOG.md' and try again."
-          comment: ${{ github.event.number }} already has a comment from this workflow. Only update if the content has changed.
-
-
