@@ -1,4 +1,4 @@
-name: Check if CHANGELOG.md has been updated
+name: CHANGELOG.md has been updated
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check if CHANGELOG.md has been updated
+      - name: CHANGELOG.md has been updated
         run: |
           changed_files=$(git diff --name-only --diff-filter=d origin/main..HEAD)
           if [[ ! "$changed_files" =~ "<CHANGELOG.md>" ]]; then
